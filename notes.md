@@ -89,21 +89,51 @@ Each language's front end generates an AST, which represents the structure of th
 
 * Middle End: Unifies the different ASTs into a generic form, then converts it into GIMPLE and Static Single Assignment (SSA) representations for optimization
 The various language-specific ASTs are converted into a unified form called generic.
-* The generic representation is converted into GIMPLE, a simplified form
-    * Each expression has no more than three operands
-    * Control flow constructs are simplified to conditional statements and goto operators.
-    * Function call arguments are only variables.
+    * The generic representation is converted into GIMPLE, a simplified form
+        * Each expression has no more than three operands
+        * Control flow constructs are simplified to conditional statements and goto operators.
+        * Function call arguments are only variables.
 
-* GIMPLE is designed for ease of optimization.
+    * GIMPLE is designed for ease of optimization.
 
-* Conversion to SSA: In SSA, each variable is assigned only once, but can be used multiple times. When a variable is reassigned, a new version of the variable is created
+    * Conversion to SSA: In SSA, each variable is assigned only once, but can be used multiple times. When a variable is reassigned, a new version of the variable is created
 
-* SSA form is used for performing various optimizations. GCC performs over 20 different optimizations on SSA trees
-* Post-Optimization: After optimizations, the SSA form is converted back to GIMPLE for further processing.
+    * SSA form is used for performing various optimizations. GCC performs over 20 different optimizations on SSA trees
+    * Post-Optimization: After optimizations, the SSA form is converted back to GIMPLE for further processing.
 
+* Backend:RTL plays a pivotal role in GCC's backend by serving as an intermediate representation that allows the compiler to perform detailed optimizations and generate machine-specific code 
 
-[gcc internals](https://bitboom.github.io/2018-10-22/an-overview-of-gcc)
+## Mapping with phases of compilation
+
+* Lexical Analyzer → Tokens
+    * The source code is read and converted into tokens (identifiers, keywords, operators, etc.). This phase is handled by the front end of the compiler.
+
+* Syntax Analyzer → AST
+    * The tokens are parsed according to the grammar of the programming language, and an Abstract Syntax Tree (AST) is generated. This tree represents the syntactical structure of the program.
+
+* Semantic Analyzer → Annotated AST
+    * The AST is analyzed for semantic correctness (e.g., type checking, variable scope resolution). The tree may be annotated with additional semantic information.
+
+* Intermediate Code Generator → GIMPLE
+    * The AST is lowered into a simpler, language-independent intermediate representation called GIMPLE, which is easier to optimize.
+
+* Code Optimizer → GIMPLE/SSA/RTL
+    * This might involve transforming the GIMPLE representation into Static Single Assignment (SSA) form, Various optimization passes are applied to the intermediate representations.
+
+* Code Generator → RTL → Assembly
+    * The optimized intermediate representation (often RTL) is converted into machine-specific assembly code.
+
+![Block diagram1](screenshots/gcc-block-diagram-1.png)
+
+![Block diagram2](screenshots/gcc-block-diagram-2.png)
+
+[gcc internals-1](https://bitboom.github.io/2018-10-22/an-overview-of-gcc)
+
+[gcc internals-2](https://gcc-newbies-guide.readthedocs.io/en/latest/diving-into-gcc-internals.html)
 
 [RTL](https://www.cse.iitb.ac.in/~uday/courses/cs715-09/gcc-rtl.pdf)
+
+
+
 
 
